@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional styles can be added here if needed -->
+</head>
+<body>
+    <!-- Header for login/logout/register -->
+    <header class="bg-dark text-white">
+        <div class="container">
+            <div class="d-flex justify-content-end align-items-center">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}" class="btn btn-outline-primary me-2">Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
+                    
+
+                    <a href="{% url 'home' %}" class="btn btn-outline-primary">Back to Home</a>
+                    <a href="{% url 'movie_list' %}" class="btn btn-outline-primary">View Movies List</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content: Recommended Movies and All Movies lists with links -->
+    <div class="container mt-4">
+        <h2>Recommended Movies for You</h2>
+        <ul>
+            {% for movie in recommended_movies %}
+                <li>
+                    <a href="{% url 'movie_detail' movie_id=movie.id %}">{{ movie.title }}</a> - Genres: {{ movie.genres }}
+                </li>
+            {% empty %}
+                <li>No recommendations available.</li>
+            {% endfor %}
+        </ul>
+
+        <h2>All Movies</h2>
+        <ul>
+            {% for movie in movie_list %}
+                <li>
+                    <a href="{% url 'movie_detail' movie_id=movie.id %}">{{ movie.title }}</a> - Genres: {{ movie.genres }}
+                </li>
+            {% empty %}
+                <li>No movies available.</li>
+            {% endfor %}
+        </ul>
+        
+    </div>
+    <div>
+        
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

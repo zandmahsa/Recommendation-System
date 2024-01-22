@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #252555;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        header {
+            background-color: #343a40;
+            padding: 15px;
+            text-align: right;
+        }
+
+        .sign-in-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sign-in-link:hover {
+            text-decoration: underline;
+        }
+
+        .image-container {
+            position: relative;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            font-size: 30px;
+            color: #ccc;
+            margin: 0 5px;
+        }
+
+        .rating label:hover,
+        .rating label:hover ~ label,
+        .rating input:checked ~ label {
+            color: #f90;
+        }
+
+        .tags span.tag {
+            background-color: #007bff;
+            color: white;
+            padding: 5px;
+            margin-right: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="bg-dark text-white">
+    <div class="container">
+        <div class="d-flex justify-content-end align-items-center">
+            <a href="{% url 'movie_list' %}" class="btn btn-outline-primary me-2">Back to movie list</a>
+            <a href="{% url 'home' %}" class="btn btn-outline-primary me-2">Back to Home</a>
+            
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <h1>{{ movie.title }}</h1>
+    <p>Genres: {{ movie.genres }}</p>
+    
+    <div class="movie-details">
+        <h2>Links</h2>
+        {% for link in links %}
+            {% if link.imdb_id %}
+                <p><a href="https://www.imdb.com/title/tt{{ link.imdb_id }}" target="_blank" >IMDb Page</a></p>
+            {% endif %}
+            {% if link.tmdb_id %}
+                <p><a href="https://www.themoviedb.org/movie/{{ link.tmdb_id }}" target="_blank">TMDb Page</a></p>
+            {% endif %}
+        {% endfor %}
+
+        <h2>Tags</h2>
+        <div class="tags">
+            {% for tag in tags %}
+                <span class="tag">{{ tag.tag }}</span>
+            {% endfor %}
+        </div>
+
+        
+    </div>
+
+    {% if user.is_authenticated %}
+        <h2>Rate this Movie</h2>
+        <form method="post" action="{% url 'movie_detail' movie.id %}">
+            {% csrf_token %}
+            <div class="image-container">
+                <div class="rating">
+                    <input type="radio" name="rating" id="star5" value="5">
+                    <label for="star5">★</label>
+                    <input type="radio" name="rating" id="star4" value="4">
+                    <label for="star4">★</label>
+                    <input type="radio" name="rating" id="star3" value="3">
+                    <label for="star3">★</label>
+                    <input type="radio" name="rating" id="star2" value="2">
+                    <label for="star2">★</label>
+                    <input type="radio" name="rating" id="star1" value="1">
+                    <label for="star1">★</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Rating</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}" class="sign-in-link">Log in</a> to rate movies.</p>
+    {% endif %}
+    
+    <a href="{% url 'movie_list' %}" class="btn btn-outline-primary me-2">Back to movie list</a>
+    <a href="{% url 'home' %}" class="btn btn-outline-primary me-2">Back to Home</a>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
