@@ -3,6 +3,9 @@ from django.db.models import Avg
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+#from .models import Rating
+import numpy as np
+from collections import defaultdict
 
 
 class Movie(models.Model):
@@ -66,3 +69,41 @@ class GenrePreference(models.Model):
 
     
 
+
+
+
+
+
+def get_movie_rating_vectors():
+    """
+    Retrieves all ratings from the database and constructs a dictionary where
+    keys are movie_ids and values are lists of tuples (user_id, rating).
+    """
+    # Fetch all ratings from the database
+    ratings = Rating.objects.all().values_list('movie_id', 'user_id', 'rating')
+
+    # Initialize a default dictionary to hold lists of tuples (user_id, rating) for each movie
+    movie_rating_vectors = defaultdict(list)
+
+    # Populate the dictionary
+    for movie_id, user_id, rating in ratings:
+        movie_rating_vectors[movie_id].append((user_id, rating))
+
+    return movie_rating_vectors
+
+def get_user_rating_vectors():
+    """
+    Retrieves all ratings from the database and constructs a dictionary where
+    keys are user_ids and values are lists of tuples (movie_id, rating).
+    """
+    # Fetch all ratings from the database
+    ratings = Rating.objects.all().values_list('user_id', 'movie_id', 'rating')
+
+    # Initialize a default dictionary to hold lists of tuples (movie_id, rating) for each user
+    user_rating_vectors = defaultdict(list)
+
+    # Populate the dictionary
+    for user_id, movie_id, rating in ratings:
+        user_rating_vectors[user_id].append((movie_id, rating))
+
+    return user_rating_vectors
