@@ -6,6 +6,9 @@ from pathlib import Path
 from recommender.models import Link, Movie, Rating, Tag
 from django.utils.dateparse import parse_datetime
 from django.db import transaction
+import datetime
+import pytz
+from django.utils.timezone import make_aware
 
 
 
@@ -99,30 +102,35 @@ class Command(BaseCommand):
         except Exception as e:
             logger.error(f"Error while importing ratings: {e}")
 
+
+
+
     def import_tags(self):
         logger.info("Starting to import tags...")
         tags_csv_path = settings.BASE_DIR / 'data/tags.csv'
         tag_objects = []
 
+        with open(tags_csv_path, mode='r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                movie_id = int(row['movieId'])
+                if Movie.objects.filter(movie_id=movie_id).exists():
+                    movie = Movie.objects.get(movie_id=movie_id)
+                    # Convert epoch time to datetime
+                    timestamp = make_aware(datetime.datetime.fromtimestamp(int(row['timestamp'])), pytz.utc)
+                    tag_objects.append(Tag(
+                        movie=movie,
+                        user_id=int(row['userId']),
+                        tag=row['tag'],
+                        timestamp=timestamp
+                    ))
+                else:
+                    logger.warning(f"Skipping tag for movie ID {movie_id} due to missing or invalid timestamp.")
+
         try:
-            with open(tags_csv_path, mode='r', encoding='utf-8') as csvfile:
-                reader = csv.DictReader(csvfile)
-                for row in reader:
-                    movie_id = int(row['movieId'])
-                    if Movie.objects.filter(movie_id=movie_id).exists():
-                        movie = Movie.objects.get(movie_id=movie_id)
-                        tag_objects.append(Tag(
-                            movie=movie,
-                            user_id=int(row['userId']),
-                            tag=row['tag'],
-                            timestamp=parse_datetime(row['timestamp'])
-                        ))
-                        logger.info(f"Successfully prepared tag for import for movie ID {row['movieId']}")
-            Tag.objects.bulk_create(tag_objects, ignore_conflicts=False)
-            
-            logger.info("Tags imported successfully.")
-            #pass
+            with transaction.atomic():
+                Tag.objects.bulk_create(tag_objects)
+                logger.info(f"{len(tag_objects)} tags imported successfully.")
         except Exception as e:
-            logger.error(f"Failed to import tags: {e}")
-            
-        #logger.info("Finished importing tags.")
+            logger.error(f"Failed to import tags due to error: {e}")
+
