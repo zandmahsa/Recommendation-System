@@ -18,8 +18,7 @@ urlpatterns = [
     path('logout/', custom_logout, name='logout'),
     path('movies/', movie_list, name='movie_list'),
     path('movies/<int:movie_id>/', movie_detail, name='movie_detail'),
-   # path('set-genre-preferences/', recommender_views.set_genre_preferences, name='set_genre_preferences'),
-
+   
     
 
 ]

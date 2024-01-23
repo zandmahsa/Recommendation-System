@@ -9,11 +9,8 @@ from .forms import RatingForm
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from django.contrib import messages
-
-
 from sklearn.metrics.pairwise import linear_kernel
 import joblib
-
 from .forms import GenrePreferenceForm
 from django.http import HttpResponseForbidden
 
@@ -25,7 +22,7 @@ def home(request):
     if request.user.is_authenticated:
         try:
             genre_pref_instance = GenrePreference.objects.get(user=request.user)
-            initial_genres = genre_pref_instance.genres.split(',')  # Split the saved genres
+            initial_genres = genre_pref_instance.genres.split(',')  
 
         except GenrePreference.DoesNotExist:
             genre_pref_instance = None
@@ -53,9 +50,6 @@ def home(request):
     return render(request, 'recommender/home.html', {'genre_form': genre_form})
 
 
-    
-
-
 def custom_logout(request):
     logout(request)
     return redirect('home')
@@ -79,16 +73,16 @@ def profile(request):
     else:
         recommended_movies = recommend_movies_content_based(request.user.id)
 
-    # Fetch preference-based recommended movies; this should always reflect current preferences
+    # fetch preference-based recommended movies
     preference_recommended_movies = recommend_movies_based_on_preferences(request.user.id)
 
-    # Fetch additional content-based recommendations as a fallback or supplement
+    #fetch additional content-based recommendations
     additional_recommendations = recommend_movies_content_based(request.user.id)  
 
-    # Fetch a general list of popular movies
+    #fetch a general list of popular movies
     movie_list = Movie.objects.annotate(avg_rating=Avg('ratings__rating')).order_by('-avg_rating')[:10]
     
-    # Pagination
+   
     movies_per_page = 6
     paginator = Paginator(preference_recommended_movies, movies_per_page)
     page_number = request.GET.get('page')
@@ -96,7 +90,7 @@ def profile(request):
 
     return render(request, 'recommender/profile.html', {
         'recommended_movies': recommended_movies,
-        'additional_recommendations': additional_recommendations,  # Add this line
+        'additional_recommendations': additional_recommendations,  
         'movie_list': movie_list,
         'preference_recommended_movies': preference_recommended_movies,
         'page_obj': page_obj,
@@ -107,11 +101,11 @@ def profile(request):
 def movie_list(request):
     movies = Movie.objects.annotate(avg_rating=Avg('ratings__rating')).order_by('-avg_rating')
     
-    # Get user ratings
+    # get user ratings
     user_ratings = Rating.objects.filter(user_id=request.user.id).values('movie_id', 'rating')
     user_ratings_dict = {rating['movie_id']: rating['rating'] for rating in user_ratings}
 
-    # Create a list of movies with user ratings
+    
     movies_with_ratings = []
     for movie in movies:
         movies_with_ratings.append({
@@ -124,7 +118,6 @@ def movie_list(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'recommender/movie_list.html', {'page_obj': page_obj})
-
 
 
 
@@ -163,31 +156,23 @@ def concatenate_tags(movie_id):
 def get_tfidf_vectorizer():
     return joblib.load('tfidf_vectorizer.joblib')
 
-# Function to recommend movies
+
 def recommend_movies_content_based(user_id):
     tfidf_vectorizer = get_tfidf_vectorizer()
 
-    # Get the user's high-rated movies' genres and tags
     user_high_rated_movies = Rating.objects.filter(user_id=user_id, rating__gte=3).values_list('movie_id', flat=True)
    
-   # user_high_rated_movies = Rating.objects.filter(user_id=user_id, rating__gte=3).select_related('movie').prefetch_related('tags')
     movies_with_tags = Movie.objects.filter(id__in=user_high_rated_movies).prefetch_related('tags')
-
-
-   # user_movie_descriptions = {
-    #    rating.movie.id: ' '.join([rating.movie.genres] + [tag.tag for tag in rating.movie.tags.all()])
-    #    for rating in user_high_rated_movies
-   # }
 
     user_movie_descriptions = {
         movie.id: ' '.join([movie.genres] + [tag.tag for tag in movie.tags.all()])
         for movie in movies_with_tags
     }
 
-    # Transform the user's movies to TF-IDF vectors
+    
     user_movie_vectors = tfidf_vectorizer.transform(user_movie_descriptions.values())
 
-    # Fetch all movies' genres and tags for comparison
+    
     all_movies = Movie.objects.all().prefetch_related('tags')
     all_movie_descriptions = {
         movie.id: ' '.join([movie.genres] + [tag.tag for tag in movie.tags.all()])
@@ -195,25 +180,21 @@ def recommend_movies_content_based(user_id):
     }
     all_movie_vectors = tfidf_vectorizer.transform(all_movie_descriptions.values())
 
-    # Calculate the cosine similarities between the user's vectors and all movie vectors
+    #cosine similarities between the user's vectors and all movie vectors
     cosine_similarities = linear_kernel(user_movie_vectors, all_movie_vectors)
 
-    # Create a mapping from movie index to database ID
+  
     movie_index_to_id_mapping = list(all_movie_descriptions.keys())
 
-    # Get top 5 similar movies for each movie the user has rated highly
-    # The results will be stored in a dictionary
+    # get top 5 similar movies for each movie the user has rated highly
     recommendations = {}
     for idx, movie_id in enumerate(user_movie_descriptions.keys()):
-        similar_indices = cosine_similarities[idx].argsort()[:-6:-1]  # Top 5 movies, excluding the movie itself (hence -6)
-        # We're excluding the first one since it's the movie itself (highest similarity)
+        similar_indices = cosine_similarities[idx].argsort()[:-6:-1]  
         similar_movies = [movie_index_to_id_mapping[i] for i in similar_indices if movie_index_to_id_mapping[i] != movie_id][1:]
         recommendations[movie_id] = similar_movies
 
-    # Flatten the recommended movie IDs and remove duplicates
     flat_recommendations = set([movie_id for sublist in recommendations.values() for movie_id in sublist])
 
-    # Retrieve recommended Movie objects
     recommended_movies = Movie.objects.filter(id__in=flat_recommendations)
     return recommended_movies
 
@@ -238,24 +219,15 @@ def recommend_movies_based_on_preferences(user_id):
 
     if user_pref:
         preferred_genres = user_pref.genres.split(',')
-        # Fetch movies that match the preferred genres
+        
         movies_based_on_preferences = Movie.objects.filter(genres__in=preferred_genres)
 
-        # Fetch movies that the user rated highly
         high_rated_movie_ids = Rating.objects.filter(user_id=user_id, rating__gte=4).values_list('movie_id', flat=True)
         high_rated_movies = Movie.objects.filter(id__in=high_rated_movie_ids)
 
-        # Combine the two querysets, ensuring no duplicates
         recommended_movies = (movies_based_on_preferences | high_rated_movies).distinct()
 
     return recommended_movies
-
-
-
-
-
-
-
 
 
 @login_required
