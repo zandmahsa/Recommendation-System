@@ -8,6 +8,7 @@ from .models import Movie, Link, Tag, Rating, GenrePreference, Recommendation
 from .forms import RatingForm
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from django.contrib import messages
 
 
 from sklearn.metrics.pairwise import linear_kernel
@@ -39,6 +40,9 @@ def home(request):
                     genre_pref_instance.save()
                 else:
                     GenrePreference.objects.create(user=request.user, genres=selected_genres)
+                
+                messages.success(request, 'Your genre preferences were submitted successfully.')
+
                 return redirect('home')
         else:
             initial_genres = genre_pref_instance.genres.split(',') if genre_pref_instance else []
@@ -75,9 +79,6 @@ def profile(request):
     else:
         recommended_movies = recommend_movies_content_based(request.user.id)
 
-
-
-
     # Fetch preference-based recommended movies; this should always reflect current preferences
     preference_recommended_movies = recommend_movies_based_on_preferences(request.user.id)
 
@@ -87,12 +88,18 @@ def profile(request):
     # Fetch a general list of popular movies
     movie_list = Movie.objects.annotate(avg_rating=Avg('ratings__rating')).order_by('-avg_rating')[:10]
     
+    # Pagination
+    movies_per_page = 6
+    paginator = Paginator(preference_recommended_movies, movies_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'recommender/profile.html', {
         'recommended_movies': recommended_movies,
         'additional_recommendations': additional_recommendations,  # Add this line
         'movie_list': movie_list,
         'preference_recommended_movies': preference_recommended_movies,
-
+        'page_obj': page_obj,
     })
 
 

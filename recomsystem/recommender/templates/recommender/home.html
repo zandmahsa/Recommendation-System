@@ -22,7 +22,7 @@
         .header-link {
             color: #fff;
             text-decoration: none;
-            margin-right: 10px; /* Added for spacing */
+            margin-right: 10px; 
         }
         .header-link:hover {
             text-decoration: underline;
@@ -47,9 +47,25 @@
             position: relative;
             display: flex;
         }
-        /* Custom CSS to style the form elements */
+        
         .genre-form label, .genre-form input, .genre-form p {
-            color: white;  /* Set text color to white */
+            color: white;  
+        }
+    
+        .genre-form button.btn {
+        background-color: #9370DB; 
+        border-color: #9370DB;
+        }
+    
+        .genre-form button.btn:hover {
+        background-color: #8458B3; 
+        border-color: #8458B3; 
+        }
+        h2 {
+        color: #9370DB; 
+        font-family: Arial, sans-sserif; 
+        font-size: 24px; 
+        font-weight: normal; 
         }
     </style>
 </head>
@@ -74,22 +90,33 @@
     <div class="row">
         <div class="col-md-12">
             <div class="center-text">
-                <p>Welcome to our Movie Recommendation System</p>
+                <p>Welcome to Our simple Movie Recommendation System</p>
             </div>
             <div class="rate-text">
                 <p>Lets rate movies :)</p>
             </div>
         </div>
     </div>
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     
-    <!-- Genre Preference Form -->
     <div class="container">
         {% if user.is_authenticated %}
             <h2>Set Your Genre Preferences</h2>
-            <form method="post">
+            <form method="post" class="genre-form mt-3">
                 {% csrf_token %}
-                {{ genre_form.as_p }}
-                <button type="submit">Save Preferences</button>
+                <div class="mb-3"></div>
+                    {{ genre_form.as_p }}
+                </div>
+                <button type="submit" class="btn btn-primary">Save Preferences</button>
             </form>
         {% else %}
             <p>You need to <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> first.</p>
@@ -104,5 +131,21 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
+<footer class="bg-dark text-white mt-5 py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Students Name:</strong> Mahsa Zand & Mitra Faraji</p>
+                <p><strong>University:</strong> Osnabrueck University</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Professor:</strong>  Dr. phil. Tobias Thelen</p>
+                <p><strong>Course:</strong> Artificial Intelligence and the Web</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 </html>
 
