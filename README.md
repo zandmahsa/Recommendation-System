@@ -16,7 +16,7 @@ python manage.py generate_recommendations
 
 
 
-# Editing this README
+# you can see the pictures of our project in picture folder
 
 
 
