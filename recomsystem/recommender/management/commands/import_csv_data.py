@@ -9,7 +9,7 @@ from django.db import transaction
 import datetime
 import pytz
 from django.utils.timezone import make_aware
-
+from django.contrib.auth.models import User
 
 
 logging.basicConfig(level=logging.INFO)
@@ -81,15 +81,18 @@ class Command(BaseCommand):
     def import_ratings(self):
         ratings_csv_path = settings.BASE_DIR / 'data/ratings.csv'
         rating_objects = []
+        user_ids = set()
 
         try:
             with open(ratings_csv_path, mode='r', encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
+                    user_id = int(row['userId'])
+                    user_ids.add(user_id)
                     movie_id = int(row['movieId'])
                     if Movie.objects.filter(movie_id=movie_id).exists():
                         rating_objects.append(Rating(
-                            user_id=int(row['userId']),
+                            user_id=user_id,
                             movie_id=movie_id,
                             rating=float(row['rating']),
                             timestamp=parse_datetime(row['timestamp'])
@@ -97,11 +100,14 @@ class Command(BaseCommand):
                     else:
                         logger.warning(f"Movie with id {movie_id} does not exist, rating skipped.")
 
+            # Create User objects for new users
+            for user_id in user_ids:
+                User.objects.get_or_create(username=str(user_id))
+
             Rating.objects.bulk_create(rating_objects, ignore_conflicts=True)
             logger.info("Ratings imported successfully.")
         except Exception as e:
             logger.error(f"Error while importing ratings: {e}")
-
 
 
 

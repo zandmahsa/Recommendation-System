@@ -4,6 +4,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 import joblib
+from django.conf import settings
+import os
+
 
 class Command(BaseCommand):
     help = 'Train and save the TF-IDF model for movie descriptions'
@@ -21,9 +24,14 @@ class Command(BaseCommand):
         # Calculate cosine similarity matrix
         cosine_similarities = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-        # Save the TF-IDF Vectorizer
-        joblib.dump(tfidf_vectorizer, 'tfidf_vectorizer.joblib')
 
-        joblib.dump(cosine_similarities, 'cosine_similarities.joblib')
+        # Construct the full file paths
+        tfidf_vectorizer_path = os.path.join(settings.BASE_DIR, 'tfidf_vectorizer.joblib')
+        cosine_similarities_path = os.path.join(settings.BASE_DIR, 'cosine_similarities.joblib')
+
+
+        # Save the TF-IDF Vectorizer and Cosine Similarities at the constructed paths
+        joblib.dump(tfidf_vectorizer, tfidf_vectorizer_path)
+        joblib.dump(cosine_similarities, cosine_similarities_path)
         
         self.stdout.write(self.style.SUCCESS('Successfully trained and saved the TF-IDF model'))

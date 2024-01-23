@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Avg
-from .models import Movie, Link, Tag, Rating, GenrePreference
+from .models import Movie, Link, Tag, Rating, GenrePreference, Recommendation
 from .forms import RatingForm
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -76,14 +76,23 @@ def profile(request):
         recommended_movies = recommend_movies_content_based(request.user.id)
 
 
-    additional_recommendations = recommend_movies_content_based(request.user.id)  # Assuming this function now returns a list of movies
 
+
+    # Fetch preference-based recommended movies; this should always reflect current preferences
+    preference_recommended_movies = recommend_movies_based_on_preferences(request.user.id)
+
+    # Fetch additional content-based recommendations as a fallback or supplement
+    additional_recommendations = recommend_movies_content_based(request.user.id)  
+
+    # Fetch a general list of popular movies
     movie_list = Movie.objects.annotate(avg_rating=Avg('ratings__rating')).order_by('-avg_rating')[:10]
-
+    
     return render(request, 'recommender/profile.html', {
         'recommended_movies': recommended_movies,
         'additional_recommendations': additional_recommendations,  # Add this line
-        'movie_list': movie_list
+        'movie_list': movie_list,
+        'preference_recommended_movies': preference_recommended_movies,
+
     })
 
 
@@ -116,8 +125,13 @@ def movie_list(request):
 def movie_detail(request, movie_id):
     movie = get_object_or_404(Movie, pk=movie_id)
     links = Link.objects.filter(movie=movie)
-    tags = Tag.objects.filter(movie=movie)
-    form = RatingForm(request.POST)
+
+    #tags = Tag.objects.filter(movie=movie)
+    tag_values = Tag.objects.filter(movie=movie).values_list('tag', flat=True).distinct()
+    unique_tags = set(tag_values)
+
+
+    form = RatingForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
         Rating.objects.update_or_create(
@@ -129,7 +143,7 @@ def movie_detail(request, movie_id):
     return render(request, 'recommender/movie_detail.html', {
         'movie': movie,
         'links': links,
-        'tags': tags,
+        'tags': unique_tags,
         'form': form  
     })
 
@@ -229,3 +243,15 @@ def recommend_movies_based_on_preferences(user_id):
 
     return recommended_movies
 
+
+
+
+
+
+
+
+
+@login_required
+def user_recommendations(request):
+    recommendations = Recommendation.objects.filter(user=request.user)
+    return render(request, 'recommendations.html', {'recommendations': recommendations})

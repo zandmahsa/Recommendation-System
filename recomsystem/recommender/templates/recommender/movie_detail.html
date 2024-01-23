@@ -93,10 +93,15 @@
             {% endif %}
         {% endfor %}
 
+        
+        
+
         <h2>Tags</h2>
         <div class="tags">
             {% for tag in tags %}
-                <span class="tag">{{ tag.tag }}</span>
+                <span class="tag">{{ tag }}</span>
+            {% empty %}
+                <p>No tags found for this movie.</p>
             {% endfor %}
         </div>
 

@@ -39,17 +39,27 @@
             {% endfor %}
         </ul>
 
-        <h2>Movies you rated</h2>
+        <h2>Popular Movies</h2>
         <ul>
             {% for movie in movie_list %}
+                <li>
+                    <a href="{% url 'movie_detail' movie_id=movie.id %}">{{ movie.title }}</a> - Genres: {{ movie.genres }} - Average Rating: {{ movie.avg_rating }}
+                </li>
+            {% empty %}
+                <li>No Popular Movies to show!</li>
+            {% endfor %}
+        </ul>
+        <!-- New Section for Preference-Based Recommended Movies -->
+        <h2>Preference-Based Recommended Movies</h2>
+        <ul>
+            {% for movie in preference_recommended_movies %}
                 <li>
                     <a href="{% url 'movie_detail' movie_id=movie.id %}">{{ movie.title }}</a> - Genres: {{ movie.genres }}
                 </li>
             {% empty %}
-                <li>No movies available.</li>
+                <li>No preference-based recommendations available.</li>
             {% endfor %}
         </ul>
-        
     </div>
     <div>
         

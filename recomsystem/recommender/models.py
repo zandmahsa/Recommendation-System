@@ -3,6 +3,7 @@ from django.db.models import Avg
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+
 #from .models import Rating
 import numpy as np
 from collections import defaultdict
@@ -70,10 +71,6 @@ class GenrePreference(models.Model):
     
 
 
-
-
-
-
 def get_movie_rating_vectors():
     """
     Retrieves all ratings from the database and constructs a dictionary where
@@ -107,3 +104,15 @@ def get_user_rating_vectors():
         user_rating_vectors[user_id].append((movie_id, rating))
 
     return user_rating_vectors
+
+
+
+
+class Recommendation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recommendations')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ('user', 'movie')
