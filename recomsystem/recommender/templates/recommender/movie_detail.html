@@ -80,6 +80,16 @@
 
 <main class="container">
     <br></br>
+    <!-- Display success message -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    
     <h1>{{ movie.title }}</h1>
     <h5>Genres: {{ movie.genres }}</h5>
     <br></br>

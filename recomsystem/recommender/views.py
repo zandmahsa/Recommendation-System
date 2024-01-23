@@ -146,7 +146,7 @@ def movie_detail(request, movie_id):
             movie=movie,
             defaults={'rating': form.cleaned_data['rating']}
         )
-
+        messages.success(request, 'Your rate was submitted successfully.')
     return render(request, 'recommender/movie_detail.html', {
         'movie': movie,
         'links': links,
