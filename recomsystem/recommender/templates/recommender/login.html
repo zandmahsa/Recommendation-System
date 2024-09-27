@@ -4,53 +4,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <title>Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle, #3b8d99, #2e2e5b);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f0f0f0;
+        }
+
+        .container {
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            color: #ffcb05;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            color: #f0f0f0;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            background-color: transparent;
+            border: 2px solid #ffcb05;
+            color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff6347;
+            box-shadow: 0 0 5px rgba(255, 99, 71, 0.5);
+        }
+
+        .btn {
+            width: 100%;
+            background-color: #ff6347;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e55347;
+        }
+
+        .mt-3 {
+            text-align: center;
+        }
+
+        .mt-3 a {
+            color: #ffcb05;
+            text-decoration: none;
+        }
+
+        .mt-3 a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #252555;
-        margin: 0;
-        padding: 0;
-    }
-    .login,
-    .username,
-    .password,
-    .mt-3,
-    .btn {
-        color: aliceblue;
-        font-family: 'Times New Roman', Times, serif;
-    }
-</style>
-
 <body>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <h2 class="login">Login</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label class="username" for="loginUsername">Username</label>
-                        <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter your username">
-                    </div>
-                    <div class="form-group">
-                        <label class="password" for="loginPassword">Password</label>
-                        <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter your password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
-                <p class="mt-3">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
-                <a href="{% url 'home' %}">Back to Home</a>
+    <div class="container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Enter your username">
             </div>
-        </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p class="mt-3">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+        <p class="mt-3"><a href="{% url 'home' %}">Back to Home</a></p>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 
 </html>

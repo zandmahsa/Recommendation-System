@@ -4,148 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #252555;
+            background: linear-gradient(135deg, #3b8d99, #6b6b83);
+            color: #f0f0f0;
             height: 100vh;
+            margin: 0;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
+
         header {
-            background-color: #343a40;
-            color: #fff;
-            padding: 15px;
-            text-align: right;
+            background-color: #222;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-end;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         .header-link {
-            color: #fff;
+            color: #f0f0f0;
             text-decoration: none;
-            margin-right: 10px; 
+            margin-left: 20px;
+            transition: color 0.3s ease;
         }
+
         .header-link:hover {
-            text-decoration: underline;
+            color: #ff6347;
         }
+
         .center-text {
             text-align: center;
             font-size: 3em;
-            color:#fff;
-            margin-bottom: 2rem;
-            font-family: 'Times New Roman', Times, serif;
+            margin-top: 2rem;
+            color: #ffcb05;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
+
         .rate-text {
-            text-align: left;
-            font-size: 2rem;
-            color:#fff;
-            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #f0f0f0;
         }
-        .star-image {
-            width: 50%;
-            height:50%;
-            margin-bottom: 20px;
-            position: relative;
-            display: flex;
+
+        .genre-form {
+            background-color: #2c3e50;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            margin: 2rem 0;
         }
-        
-        .genre-form label, .genre-form input, .genre-form p {
-            color: white;  
+
+        .genre-form label,
+        .genre-form input,
+        .genre-form p {
+            color: #f0f0f0;
         }
-    
-        .genre-form button.btn {
-        background-color: #9370DB; 
-        border-color: #9370DB;
+
+        .genre-form button {
+            background-color: #ff6347;
+            border: none;
+            padding: 10px 20px;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-    
-        .genre-form button.btn:hover {
-        background-color: #8458B3; 
-        border-color: #8458B3; 
+
+        .genre-form button:hover {
+            background-color: #e55347;
         }
+
         h2 {
-        color: #9370DB; 
-        font-family: Arial, sans-sserif; 
-        font-size: 24px; 
-        font-weight: normal; 
+            text-align: center;
+            color: #ffcb05;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .star-image {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .star-image img {
+            width: 150px;
+            transition: transform 0.3s ease;
+        }
+
+        .star-image img:hover {
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        footer {
+            background-color: #222;
+            color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer strong {
+            color: #ffcb05;
+        }
+
+        @media (max-width: 768px) {
+            .center-text {
+                font-size: 2em;
+            }
+
+            .rate-text {
+                font-size: 1.2rem;
+            }
+
+            .genre-form {
+                margin: 1rem 0;
+            }
+
+            .star-image img {
+                width: 100px;
+            }
         }
     </style>
 </head>
 <body>
 
-<header class="bg-dark text-white">
-    <div class="container">
-        <div class="d-flex justify-content-end align-items-center">
-            {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn btn-outline-primary me-2">Profile</a>
-                <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
-                <a href="{% url 'movie_list' %}" class="btn btn-outline-primary">View Movies List</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
-                <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
-            {% endif %}
-        </div>
-    </div>
+<header>
+    {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}" class="header-link">Profile</a>
+        <a href="{% url 'logout' %}" class="header-link">Logout</a>
+        <a href="{% url 'movie_list' %}" class="header-link">Movies List</a>
+    {% else %}
+        <a href="{% url 'login' %}" class="header-link">Login</a>
+        <a href="{% url 'register' %}" class="header-link">Register</a>
+    {% endif %}
 </header>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="center-text">
-                <p>Welcome to Our simple Movie Recommendation System</p>
-            </div>
-            <div class="rate-text">
-                <p>Lets rate movies :)</p>
-            </div>
-        </div>
+    <div class="center-text">
+        <p>Welcome to Our Movie Recommendation System</p>
     </div>
+    <div class="rate-text">
+        <p>Let's rate some movies!</p>
+    </div>
+
     {% if messages %}
     <div class="container mt-4">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
     </div>
     {% endif %}
-    
-    <div class="container">
-        {% if user.is_authenticated %}
+
+    {% if user.is_authenticated %}
+        <div class="genre-form">
             <h2>Set Your Genre Preferences</h2>
-            <form method="post" class="genre-form mt-3">
+            <form method="post">
                 {% csrf_token %}
-                <div class="mb-3"></div>
+                <div>
                     {{ genre_form.as_p }}
                 </div>
-                <button type="submit" class="btn btn-primary">Save Preferences</button>
+                <button type="submit">Save Preferences</button>
             </form>
-        {% else %}
-            <h2>You need to <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> first.</h2>
-        {% endif %}
-    </div>
-    
+        </div>
+    {% else %}
+        <h2>You need to <a href="{% url 'login' %}">log in</a> or <a href="{% url 'register' %}">register</a> first.</h2>
+    {% endif %}
 </div>
 
 <div class="star-image">
-    <img src="https://freepngimg.com/thumb/star/24970-3-star-transparent-background.png" alt="image1">
+    <img src="https://freepngimg.com/thumb/star/24970-3-star-transparent-background.png" alt="Star Image">
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-<footer class="bg-dark text-white mt-5 py-4">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Students Name:</strong> Mahsa Zand & Mitra Faraji</p>
-                <p><strong>University:</strong> Osnabrueck University</p>
-            </div>
-            <div class="col-md-6">
-                <p><strong>Professor:</strong>  Dr. phil. Tobias Thelen</p>
-                <p><strong>Course:</strong> Artificial Intelligence and the Web</p>
-            </div>
-        </div>
-    </div>
+<footer>
+    <p><strong>Name:</strong> Mahsa Zand </p>
+    <p><strong>University:</strong> Osnabrueck University</p>
 </footer>
 
+</body>
 </html>
-

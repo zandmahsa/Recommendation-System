@@ -2,28 +2,115 @@
 <html>    
 <head>
     <title>Movie List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #3b8d99, #2c3e50);
+            margin: 0;
+            padding: 0;
+            color: #fff;
+        }
+
+        header {
+            background-color: #222;
+            padding: 15px;
+            text-align: right;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-right: 10px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e55347;
+        }
+
+        h1 {
+            color: #ffcb05;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        ul li a {
+            color: #ffcb05;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+
+        ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .pagination a, .pagination span {
+            padding: 10px 15px;
+            margin: 0 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination a {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+
+        .pagination span {
+            background-color: #ffcb05;
+            color: #222;
+        }
+    </style>
 </head>
 
 <body>
     
-    <header class="bg-dark text-white">
+    <header>
         <div class="container">
             <div class="d-flex justify-content-end align-items-center">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'profile' %}" class="btn btn-outline-primary me-2">Profile</a>
-                    <a href="{% url 'logout' %}" class="btn btn-outline-primary me-2">Logout</a>
-                    <a href="{% url 'home' %}" class="btn btn-outline-primary">Home</a>
+                    <a href="{% url 'profile' %}" class="btn">Profile</a>
+                    <a href="{% url 'logout' %}" class="btn">Logout</a>
+                    <a href="{% url 'home' %}" class="btn">Home</a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Login</a>
-                    <a href="{% url 'register' %}" class="btn btn-outline-primary">Register</a>
+                    <a href="{% url 'login' %}" class="btn">Login</a>
+                    <a href="{% url 'register' %}" class="btn">Register</a>
                 {% endif %}
             </div>
         </div>
     </header>
 
-    
     <div class="container mt-4">
         <h1>Movie List</h1>
         <ul>
@@ -51,37 +138,28 @@
             {% endfor %}
         </ul>
 
-        
-        
-
         <!-- Pagination Logic with Clickable Page Numbers -->
-        
-        <div class="d-flex justify-content-center align-items-center my-4">
+        <div class="pagination">
             {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-primary me-2">Previous</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
             {% endif %}
 
             {% with total_pages=page_obj.paginator.num_pages current=page_obj.number %}
                 {% for num in page_obj.paginator.page_range %}
                     {% if num >= current|add:"-5" and num <= current|add:"4" %}
                         {% if num == current %}
-                            <span class="badge bg-primary mx-1">{{ num }}</span>
+                            <span>{{ num }}</span>
                         {% else %}
-                            <a href="?page={{ num }}" class="badge bg-secondary mx-1">{{ num }}</a>
+                            <a href="?page={{ num }}">{{ num }}</a>
                         {% endif %}
                     {% endif %}
                 {% endfor %}
             {% endwith %}
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-primary ms-2">Next</a>
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
             {% endif %}
         </div>
-
-        
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

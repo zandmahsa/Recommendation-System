@@ -69,7 +69,8 @@ def register(request):
 @login_required
 def profile(request):
     if Rating.objects.filter(user_id=request.user.id).count() < 5:
-        recommended_movies = recommend_movies_for_new_users()
+        recommended_movies = recommend_movies_for_new_users(request.user.id)
+
     else:
         recommended_movies = recommend_movies_content_based(request.user.id)
 
@@ -161,7 +162,8 @@ def recommend_movies_content_based(user_id):
     tfidf_vectorizer = get_tfidf_vectorizer()
 
     user_high_rated_movies = Rating.objects.filter(user_id=user_id, rating__gte=3).values_list('movie_id', flat=True)
-   
+    if not user_high_rated_movies:
+        return Movie.objects.none()
     movies_with_tags = Movie.objects.filter(id__in=user_high_rated_movies).prefetch_related('tags')
 
     user_movie_descriptions = {
