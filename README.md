@@ -4,10 +4,9 @@
 This Django-based movie recommendation system leverages the IMDB dataset to generate personalized movie suggestions. The application employs Natural Language Processing (NLP) techniques to analyze user preferences and movie metadata.
 
 ## Technologies Used
-- **Django**: Web framework for building the application.
-- **Python**: Programming language for backend logic.
-- **TF-IDF**: Used for vectorizing movie descriptions to understand content similarities.
-- **Cosine Similarity**: Employed for measuring the similarity between user preferences and movie descriptions.
+- **web development**: **Django, Python, HTML/CSS**
+- **Data Processing**: **Natural Language Processing (NLP)**
+- **Machine Learning Techniques**: **Scikit-Learn, TF-IDF (Term Frequency-Inverse Document Frequency), Cosine Similarity**
 
 ## Getting Started
 
