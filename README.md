@@ -50,11 +50,11 @@ The system uses user genre preferences along with collaborative filtering to sug
     python manage.py migrate
     ```
 
-## Start the Development Server: Run the development server:
-
-    ```bash
+## Start the Development Server: Run the development server
+    
+  ```bash
     python manage.py runserver
-    ```
+  ```
 
 ## Access the Application: Open your web browser and go to http://127.0.0.1:8000/ to see your application running.
 
