@@ -1,0 +1,6 @@
+Django
+scikit-learn
+scikit-surprise
+joblib
+pytz
+numpy
