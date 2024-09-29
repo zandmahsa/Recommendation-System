@@ -18,12 +18,6 @@ Ensure you have Python and Django installed. Then, install the necessary package
 pip install -r requirements.txt
 ```
 
-### Project Structure
-- **recomsystem/**: Main Django application directory containing all models and views.
-- **management/commands/**: Custom management commands for data import and recommendation generation.
-- **data/**: Directory containing CSV files for movies, ratings, and tags.
-- **pictures/**: Directory for project-related images.
-
 ### Running the Application
 Navigate to the `recomsystem` directory and execute the following commands:
 
@@ -46,7 +40,7 @@ Navigate to the `recomsystem` directory and execute the following commands:
    Outputs movie recommendations based on user preferences.
 
 ### Usage
-The system uses user genre preferences along with collaborative filtering to suggest relevant movies enhancing the user experience through recommendations.
+The system uses user genre preferences along with collaborative filtering to suggest relevant movies.
 
 ## Additional Notes
 - Ensure the virtual environment is active when running commands.
