@@ -5,6 +5,7 @@ This Django-based movie recommendation system leverages the IMDB dataset to gene
 
 ## Technologies Used
 - **web development**: **Django, Python, HTML/CSS**
+- **Database**: **SQLite**
 - **Data Processing**: **Natural Language Processing (NLP)**
 - **Machine Learning Techniques**: **Scikit-Learn, TF-IDF (Term Frequency-Inverse Document Frequency), Cosine Similarity**
 
