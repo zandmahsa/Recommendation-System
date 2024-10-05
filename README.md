@@ -57,4 +57,4 @@ The system uses user genre preferences along with collaborative filtering to sug
   ```
 
 ## Access the Application: Open your web browser and go to http://127.0.0.1:8000/ to see your application running.
-
+Be sure to create an account and enjoy your experience! :)
